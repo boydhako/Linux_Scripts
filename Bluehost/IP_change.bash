@@ -1,4 +1,4 @@
-#!/usr/bin/bash -xv
+#!/usr/bin/bash
 domain="$1"
 to="$2"
 logdir="$HOME/logs"
