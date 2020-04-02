@@ -36,10 +36,6 @@ function GETLASTIP {
 	lastip="$(tail -n 1 $log | awk -F: '{printf $NF}')"
 }
 
-function GETCURRENTIP {
-	crntip="$(dig +nocomment $domain A | awk -v domain="$domain." '$1 == domain {printf $NF}')"
-}
-
 function LOGIP {
 	printf "%s:%s\n" "$date" "$crntip" >> $log
 }
@@ -47,7 +43,6 @@ function LOGIP {
 function CHECKIP {
 	PREP
 	GETLASTIP
-	#GETCURRENTIP
 	if [ -z "$lastip" -o "$lastip" != "$crntip" ]; then
 	#if [ -z "$lastip" -o "$lastip" == "$crntip" ]; then
 		LOGIP
