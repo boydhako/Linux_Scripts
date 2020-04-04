@@ -9,7 +9,7 @@ function PREP {
 		exit 1
 	fi
 	if [ -z "$db" ]; then
-		db="/home4/boydhana/GIT/Linux_Scripts/Bluehost/$(basename $0 | awk -F\. '{printf $1}').db"
+		db="$HOME/GIT/Linux_Scripts/Bluehost/$(basename $0 | awk -F\. '{printf $1}').db"
 	fi
 	printf "Cheking %s ...\nDatabase:%s\n" "$wwwdir" "$db"
 	if [ ! -f "$db" ]; then
