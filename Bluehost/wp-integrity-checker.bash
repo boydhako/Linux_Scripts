@@ -1,4 +1,4 @@
-#!/usr/bin/bash -xv
+#!/usr/bin/bash
 date="$(date)"
 wwwdir="$1"
 db="$2"
@@ -19,12 +19,10 @@ function PREP {
 }
 
 function ADDNEWFILE {
-	for file in $(find $wwwdir -type f); do
+	for file in $(find $wwwdir -type f \( ! -path "*/wp-content/bps-backup/*" \)); do
 		chksum="$(shasum -a 512 $file | awk '{printf $1}')"
-		printf "Checking for %s.\n" "$file"
 		if [ "$(sqlite3 $db "SELECT checksum FROM FILEINFO WHERE file = \"$file\";" | wc -l)" -lt "1" ]; then
-			printf "Adding %s\n" "$file"
-			sqlite3 $db "INSERT INTO FILEINFO (checksum,file,date_added) VALUES(\"$chksum\",\"$file\",\"$date\");"
+			sqlite3 $db "INSERT INTO FILEINFO (checksum,file,date_added) VALUES(\"$chksum\",\"$file\",\"$date\");" 2>/dev/null
 			addstat="$?"
 			if [ "$addstat" == "19" ]; then
 				sqlite3 $db "INSERT INTO BADINSERT (checksum,file,date_found,note) VALUES(\"$chksum\",\"$file\",\"$date\",\"Checksum is not unique.\");"
@@ -34,9 +32,20 @@ function ADDNEWFILE {
 		fi
 	done
 }
+function CHKBADINS {
+	for badsum in $(sqlite3 $db "SELECT checksum FROM BADINSERT;"); do
+		for loggedfile in $(sqlite3 $db "SELECT FILEINFO.file FROM FILEINFO CROSS JOIN BADINSERT ON FILEINFO.checksum = BADINSERT.checksum WHERE BADINSERT.checksum = \"$badsum\";" | sort | uniq); do
+			printf "LOGGEDFILE:%s\n" "$loggedfile"
+			for badfile in $(sqlite3 $db "SELECT BADINSERT.file FROM FILEINFO CROSS JOIN BADINSERT ON FILEINFO.checksum = BADINSERT.checksum WHERE BADINSERT.checksum = \"$badsum\";" | sort | uniq); do
+				printf "\tMATCHING_CHECKSUM:%s\n" "$badfile"
+			done
+		done
+	done
+}
 
 function FILEINTCHK {
 	PREP
 	ADDNEWFILE
+	CHKBADINS
 }
 FILEINTCHK
