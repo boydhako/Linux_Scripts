@@ -13,7 +13,7 @@ function PREP {
 	fi
 	printf "Cheking %s ...\nDatabase:%s\n" "$wwwdir" "$db"
 	if [ ! -f "$db" ]; then
-		sqlite3 $db "CREATE TABLE FILEINFO(checksum TEXT PRIMARY KEY NOT NULL, file TEXT NOT NULL, date_added TEXT, date_modified TEXT);"
+		sqlite3 $db "CREATE TABLE FILEINFO(checksum TEXT NOT NULL, file TEXT PRIMARY KEY NOT NULL, date_added TEXT, date_modified TEXT);"
 		sqlite3 $db "CREATE TABLE BADINSERT(checksum TEXT NOT NULL, file TEXT NOT NULL, date_found TEXT, note TEXT);"
 	fi
 }
