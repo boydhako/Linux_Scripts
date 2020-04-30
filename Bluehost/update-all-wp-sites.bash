@@ -10,7 +10,7 @@ function PREP {
 }
 function MAIN {
 	PREP
-	for cfg in $(find $wwwdir -type f -name "wp-config.php"); do
+	for cfg in $(find $wwwdir -maxdepth 5 -type f -name "wp-config.php"); do
 		dir="$(dirname $cfg)"
 		printf "===\tUPDATING %s\t===\n\n" "$dir"
 		printf "Updating core files in %s.\n" "$dir"
