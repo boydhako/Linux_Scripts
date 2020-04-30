@@ -1,4 +1,4 @@
-#!/bin/bash -xv
+#!/bin/bash
 site="boydhanaleiako.me"
 sitemap="https://$site/sitemap.xml"
 tmpcurl="$HOME/tmp/tmpcurl.txt"
