@@ -13,8 +13,8 @@ function MAIN {
 	for cfg in $(find $wwwdir -maxdepth 5 -type f -name "wp-config.php"); do
 		dir="$(dirname $cfg)"
 		printf "===\tUPDATING %s\t===\n\n" "$dir"
-		printf "Updating core files in %s.\n" "$dir"
-		$HOME/GIT/Linux_Scripts/Bluehost/wp-cli.phar core update --path="$dir"
+		#printf "Updating core files in %s.\n" "$dir"
+		#$HOME/GIT/Linux_Scripts/Bluehost/wp-cli.phar core update --path="$dir"
 		printf "Updating database for %s.\n" "$dir"
 		$HOME/GIT/Linux_Scripts/Bluehost/wp-cli.phar core update-db --path="$dir"
 		printf "Updating plugins for %s.\n" "$dir"
