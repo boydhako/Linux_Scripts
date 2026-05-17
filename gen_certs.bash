@@ -3,17 +3,20 @@ wd="$(dirname $0)"
 cn="$(echo $1 | tr '[:upper:]' '[:lower:]')"
 day="$(date +%d%b%Y)"
 
-if [ -z "$cn" ]; then
-    echo "Usage: $0 <Fully Qualified Domain Name>"
-    exit 1
-else
-    if [[ "$cn" != *.* ]]; then
-        echo "Error: The Common Name (CN) must be a Fully Qualified Domain Name (FQDN)."
-        exit 1
-    fi
-fi  
-
 function prep() {
+    if [ -z "$cn" ]; then
+        echo "Usage: $0 <Fully Qualified Domain Name>"
+        exit 1
+    else
+        if [[ "$cn" != *.* ]]; then
+            echo "Error: The Common Name (CN) must be a Fully Qualified Domain Name (FQDN)."
+            exit 1
+        fi
+    fi  
+}
+
+function gen_certs() {
+    prep
     scn="$(echo $cn | awk -F. '{print $1}')"
     destdir="$wd/certs/$scn"
     keyfile="$destdir/$scn-$day-ssl.key"
@@ -23,4 +26,4 @@ function prep() {
     openssl req -new -key "$keyfile" -out "$csrfile" -subj "/CN=$cn"
 }
 
-prep
+gen_certs
